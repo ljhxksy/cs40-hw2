@@ -10,7 +10,8 @@ typedef struct T *T;
 struct T {
     int width;
     int height;
-    char *elems; //WHAT IS THIS DOING WHY IS IT A CHAR POINTER
+    int size;
+    UArray_T array;
 };
 
 extern T UArray2_new (int width, int height, int size);

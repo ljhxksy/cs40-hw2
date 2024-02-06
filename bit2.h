@@ -9,8 +9,46 @@ struct T {
     Bit_T array;
 };
 
+/********** Bit2_new ********
+ *
+ *	 Allocates, initializes, and returns a new 2-dimensional bit vector of
+ *   width * height bits
+ * 	Parameters:
+ *      		int width:	the width of the new bit2
+ *      		int height: the height of the new bit2
+ *
+ * 	Return:     the new bit2 vector
+ *
+ * 	Expects:
+ *      		height > 0 && width > 0
+ *
+ * 	Notes:	
+ *      		Will CRE if height or width is <= 0
+ *      		Will CRE if malloc fails.
+ *
+ ************************/
 extern T Bit2_new (int width, int height);
+
+/********** Bit2_free ********
+* 
+*   	Deallocates and clears all elements in the bit2.
+*
+* 	Parameters: 	
+*		UArray2_T *bit2: The pointer to bit2.
+*
+* 	Return:   none	
+*
+* 	Expects:
+*		Both the bit2 and the pointer to bit2 cannot be NULL
+*
+*	Notes:
+*		CRE if bit2 == NULL or *bit2 == NULL
+*		Sets the pointer to bit2 to NULL
+*
+ ************************/
 extern void Bit2_free(T *bit2);
+
+
 extern int Bit2_width(T bit2);
 extern int Bit2_height(T bit2);
 extern int Bit2_get(T bit2, int col, int row);

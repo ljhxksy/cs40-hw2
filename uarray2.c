@@ -29,7 +29,7 @@
  ************************/
 
 extern T UArray2_new (int width, int height, int size) {
-    //TODO: Add a bunch of asserts
+
     assert(height > 0 && width > 0 && size > 0);
 
     UArray_T uarray = UArray_new(width*height, size);
@@ -63,6 +63,7 @@ extern T UArray2_new (int width, int height, int size) {
  ************************/
 
 extern void UArray2_free(T *uarray2) {
+
     assert(*uarray2 && uarray2);
 
     UArray_free(&(*uarray2)->array);
@@ -155,14 +156,15 @@ extern int UArray2_size (T uarray2) {
 
 void *UArray2_at(T uarray2, int col, int row) {
     assert(uarray2);
-
     // printf("//////// col, row: %d, %d /////", col, row);
+    //assert out of bounds
     assert(col >= 0 && col < UArray2_width(uarray2));
     assert(row >= 0 && row < UArray2_height(uarray2));
 
-    //assert out of bounds
-    void *kiki = UArray_at(uarray2->array, UArray2_width(uarray2) * row + col);
-    return kiki;
+    void *elem = UArray_at(uarray2->array, UArray2_width(uarray2) * row + col);
+    assert(elem);
+
+    return elem;
 }
 
 /**********UArray2_map_row_major ********
@@ -194,7 +196,6 @@ extern void UArray2_map_row_major (T uarray2, void apply(int i,
                                    void *p2), void *cl) {
         assert(uarray2);
         assert(apply);
-        // void *p1 = NULL;
         
         for (int j = 0; j < UArray2_height(uarray2); j++) {
             for (int i = 0; i < UArray2_width(uarray2); i++) {
@@ -229,6 +230,7 @@ extern void UArray2_map_col_major (T uarray2, void apply(int i,
                                     void *p2), void *cl) {
         
         assert(uarray2 && apply);
+
         for (int i = 0; i < UArray2_width(uarray2); i++) {
             for (int j = 0; j < UArray2_height(uarray2); j++) {
                 apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);

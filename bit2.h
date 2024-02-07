@@ -97,7 +97,7 @@ extern int Bit2_height(T bit2);
  *              int col:     the column number of the element in the bit2
  *              int row:     the row number of the element in the uarray2
  *
- * 	Return: returns 1 if bit (col, row) in set is 1 and 0 otherwise
+ * 	Return: returns 1 if bit (col, row) in bit2 is 1 and 0 otherwise
  *
  * 	Expects:
  *      		The bit2 cannot be NULL

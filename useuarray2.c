@@ -33,6 +33,9 @@ check_and_print(int i, int j, UArray2_T a, void *p1, void *p2)
 
         *((bool *)p2) &= UArray2_at(a, i, j) == entry_p;
 
+        // printf("\nP2: ");
+        // printf("%s\n", *(int *)p2 ? "true" : "false"); 
+
         if ( (i == (DIM1 - 1) ) && (j == (DIM2 - 1) ) ) {
                 /* we got the corner */
                 *((bool *)p2) &= (*entry_p == MARKER);
@@ -56,12 +59,12 @@ main(int argc, char *argv[])
              (UArray2_height(test_array) == DIM2) &&
              (UArray2_size(test_array) == ELEMENT_SIZE);
 
-
         /* Note: we are only setting a value on the corner of the array */
         *((number *)UArray2_at(test_array, DIM1 - 1, DIM2 - 1)) = MARKER;
 
         printf("Trying column major\n");
         UArray2_map_col_major(test_array, check_and_print, &OK);
+
 
         printf("Trying row major\n");
         UArray2_map_row_major(test_array, check_and_print, &OK);

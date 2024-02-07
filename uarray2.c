@@ -156,13 +156,12 @@ extern int UArray2_size (T uarray2) {
 void *UArray2_at(T uarray2, int col, int row) {
     assert(uarray2);
 
-    printf("//////// col, row: %d, %d /////", col, row);
-    assert(0 <= col && col < uarray2->width);
-    assert(0 <= row && row < uarray2->height);
+    // printf("//////// col, row: %d, %d /////", col, row);
+    assert(col >= 0 && col < UArray2_width(uarray2));
+    assert(row >= 0 && row < UArray2_height(uarray2));
 
     //assert out of bounds
-    void *kiki = UArray_at(uarray2->array, uarray2->width * row + col);
-    // uarray2->width * col + row;
+    void *kiki = UArray_at(uarray2->array, UArray2_width(uarray2) * row + col);
     return kiki;
 }
 
@@ -194,14 +193,14 @@ extern void UArray2_map_row_major (T uarray2, void apply(int i,
                                    int j, UArray2_T uarray2, void *p1, 
                                    void *p2), void *cl) {
         assert(uarray2);
-
-        void *p1 = NULL;
-        for (int i = 0; i < uarray2->width; i++) {
-            for (int j = 0; j < uarray2->height; j++) {
-                apply(j, i, uarray2, p1, cl);
+        assert(apply);
+        // void *p1 = NULL;
+        
+        for (int j = 0; j < UArray2_height(uarray2); j++) {
+            for (int i = 0; i < UArray2_width(uarray2); i++) {
+                apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
             }
         }
-        // apply();
 }
 /**********UArray2_map_col_major ********
  *
@@ -228,11 +227,11 @@ extern void UArray2_map_row_major (T uarray2, void apply(int i,
 extern void UArray2_map_col_major (T uarray2, void apply(int i, 
                                     int j, UArray2_T uarray2, void *p1, 
                                     void *p2), void *cl) {
-
-        void *p1 = NULL;
-        for (int i = 0; i < uarray2->height; i++) {
-            for (int j = 0; j < uarray2->width; j++) {
-                apply(i, j, uarray2, p1, cl);
+        
+        assert(uarray2 && apply);
+        for (int i = 0; i < UArray2_width(uarray2); i++) {
+            for (int j = 0; j < UArray2_height(uarray2); j++) {
+                apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
             }
         }
 }

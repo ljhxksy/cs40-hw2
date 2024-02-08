@@ -2,7 +2,14 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <pnmrdr.h>
+#include <except.h>
+
 #include "uarray2.h"
+
+UArray2_T populateUArray2(FILE *fp);
+
+// handle errors
+Except_T Checked_Runtime = { "Checked Runtime Error" };
 
 int main(int argc, char *argv[]) {
     FILE *fp = NULL;
@@ -12,36 +19,41 @@ int main(int argc, char *argv[]) {
     } else if (argc == 2) {
         // open file
         fp = fopen(argv[1], "rb");
-    } 
-    // else {
-    //     RAISE(Checked_Runtime);
-    // }
+        assert(fp);
+    } else {
+        RAISE(Checked_Runtime);
+    }
 
     //TODO: File(s) ['stderr'] is (are) empty (1)
+    UArray2_T uarray2 = populateUArray2(fp);
 
+    printf("uarray2's width: %d, height: %d\n", UArray2_width(uarray2), UArray2_height(uarray2));
 
-    Pnmrdr_T test = Pnmrdr_new(fp);
-
-    Pnmrdr_mapdata data = Pnmrdr_data(test);
-    int width = data.width;
-    int height = data.height;
-
-    UArray2_T newUArr2 = UArray2_new(width, height, 8);
-
-    for (int j = 0; j < height; j++) {
-            for (int i = 0; i < width; i++){
-                    UArray2_at(newUArr2, i, j) = &((int)Pnmrdr_get(test));
-                    printf ("",UArray2_at(newUArr2, i, j));
-            }
-    }
     
 
-   
+    return 0;
+}
+
+UArray2_T populateUArray2(FILE *fp) {
+    Pnmrdr_T plain = Pnmrdr_new(fp);
+
+    Pnmrdr_mapdata data = Pnmrdr_data(test);
+    assert(data.type == 2 && data.width == 9 && data.height == 9);
+
+    UArray2_T newUArr2 = UArray2_new(data.width, data.height, sizeof(int));
+
+    for (int j = 0; j < (int)data.height; j++) {
+        for (int i = 0; i < (int)data.width; i++){
+            *((int *)UArray2_at(newUArr2, i, j)) = Pnmrdr_get(test);
+            printf ("%d", *(int *)UArray2_at(newUArr2, i, j)); //DELETE LATER
+        }
+        printf("\n"); //DELETE LATER
+    }
+    
+    printf("\n"); //DELETE LATER
+
+    Pnmrdr_free (&plain);
     fclose(fp);
 
-    Pnmrdr_free (&test);
-
-    UArray2_new(
-    )
-
+    return newUArr2;
 }

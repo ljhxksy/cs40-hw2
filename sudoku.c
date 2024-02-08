@@ -8,8 +8,9 @@
 
 UArray2_T populateUArray2(FILE *fp);
 void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2);
-
-// TODO: is assert() equivalent to raising CREs
+extern void Grid_map_subsquare(UArray2_T uarray2, void apply(int i, 
+                                   int j, UArray2_T uarray2, void *p1, 
+                                   void *p2), void *cl, int col, int row);
 Except_T Checked_Runtime = { "Checked Runtime Error" };
 
 int main(int argc, char *argv[]) {
@@ -28,15 +29,19 @@ int main(int argc, char *argv[]) {
 
     UArray2_T uarray2 = populateUArray2(fp);
 
-    printf("uarray2's width: %d, height: %d\n", UArray2_width(uarray2), UArray2_height(uarray2));
-
     int arr[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     UArray2_map_row_major(uarray2, apply, &arr);
     UArray2_map_col_major(uarray2, apply, &arr);
 
-    //break when false --> not sudoku
+    for (int i = 0; i < 9; i += 3) {
+        for (int j = 0; j < 9; j += 3) {
+            Grid_map_subsquare(uarray2, apply, &arr, i, j);
+        }
+    }
 
     UArray2_free(&uarray2);
+    printf("EXIT SUCCESS\n");
+    exit(EXIT_SUCCESS);
     return 0;
 }
 
@@ -51,11 +56,8 @@ UArray2_T populateUArray2(FILE *fp) {
     for (int j = 0; j < (int)data.height; j++) {
         for (int i = 0; i < (int)data.width; i++){
             *((int *)UArray2_at(newUArr2, i, j)) = Pnmrdr_get(plain);
-            printf ("%d", *(int *)UArray2_at(newUArr2, i, j)); //DELETE LATER
         }
-        printf("\n"); //DELETE LATER
     }
-    printf("\n"); //DELETE LATER
 
     Pnmrdr_free (&plain);
     fclose(fp);
@@ -69,16 +71,11 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) {
     int curr = *((int*)(UArray2_at(uarray2, i, j))) - 1;
     arr[curr]++;
 
-    for (int i = 0; i < 9; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-    
-    // ++ arr[UArray2_at(uarray2, i, j) - 1];
-
     if (arr[curr] > 1)
     {
-        printf("fuck cs40\n");
+        UArray2_free(&uarray2);
+        printf("EXIT FAILURE\n");
+        exit(EXIT_FAILURE);
     }
 
     int count = 0;
@@ -91,12 +88,25 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) {
     
     if (check1 == false || count == 9)
     {
-        printf("check\n");
         for (int i = 0; i < 9; i++) {
             arr[i] = 0;
         }
     }  
 }
 
+extern void Grid_map_subsquare(UArray2_T uarray2, void apply(int i, 
+                                   int j, UArray2_T uarray2, void *p1, 
+                                   void *p2), void *cl, int col, int row) {
+    assert(uarray2);
+    assert(apply);
 
+    int rowRange = row + 3;
+    int colRange = col + 3;
+    
+    for (int j = row; j < rowRange; j++) {
+        for (int i = col; i < colRange; i++) {
+            apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
+        }
+    }
+}
 

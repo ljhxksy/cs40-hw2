@@ -30,7 +30,7 @@
 
 extern T UArray2_new (int width, int height, int size) {
 
-    assert(height > 0 && width > 0 && size > 0);
+    assert(height >= 0 && width >= 0 && size > 0);
 
     UArray_T uarray = UArray_new(width*height, size);
     T newUArr2 = malloc(sizeof(struct T));

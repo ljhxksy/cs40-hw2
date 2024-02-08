@@ -228,12 +228,12 @@ extern void UArray2_map_row_major (T uarray2, void apply(int i,
 extern void UArray2_map_col_major (T uarray2, void apply(int i, 
                                     int j, UArray2_T uarray2, void *p1, 
                                     void *p2), void *cl) {
-        
-        assert(uarray2 && apply);
+    
+    assert(uarray2 && apply);
 
-        for (int i = 0; i < UArray2_width(uarray2); i++) {
-            for (int j = 0; j < UArray2_height(uarray2); j++) {
-                apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
-            }
+    for (int i = 0; i < UArray2_width(uarray2); i++) {
+        for (int j = 0; j < UArray2_height(uarray2); j++) {
+            apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
         }
+    }
 }

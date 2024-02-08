@@ -194,14 +194,14 @@ void *UArray2_at(T uarray2, int col, int row) {
 extern void UArray2_map_row_major (T uarray2, void apply(int i, 
                                    int j, UArray2_T uarray2, void *p1, 
                                    void *p2), void *cl) {
-        assert(uarray2);
-        assert(apply);
-        
-        for (int j = 0; j < UArray2_height(uarray2); j++) {
-            for (int i = 0; i < UArray2_width(uarray2); i++) {
-                apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
-            }
+    assert(uarray2);
+    assert(apply);
+    
+    for (int j = 0; j < UArray2_height(uarray2); j++) {
+        for (int i = 0; i < UArray2_width(uarray2); i++) {
+            apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
         }
+    }
 }
 /**********UArray2_map_col_major ********
  *

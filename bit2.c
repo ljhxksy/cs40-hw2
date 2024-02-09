@@ -10,7 +10,7 @@
 extern T Bit2_new (int width, int height) {
     assert(width > 0 && height > 0);
 
-    Bit_T bit = Bit_new(width*height);
+    Bit_T bit = Bit_new(width * height);
     T newBit2 = malloc(sizeof(struct T));
     assert(newBit2);
 
@@ -73,11 +73,12 @@ extern void Bit2_map_row_major (T bit2, void apply(int i, int j,
 extern void Bit2_map_col_major (T bit2, void apply(int width, int height,  
                                    Bit2_T bit2, int bit, void *p1), 
                                    void *cl) {
-        assert(bit2 && apply);
+    assert(bit2);
+    assert(apply);
 
-        for (int i = 0; i < Bit2_width(bit2); i++) {
-            for (int j = 0; j < Bit2_height(bit2); j++) {
-                apply(i, j, bit2, Bit2_get(bit2, i, j), cl);
-            }
+    for (int i = 0; i < Bit2_width(bit2); i++) {
+        for (int j = 0; j < Bit2_height(bit2); j++) {
+            apply(i, j, bit2, Bit2_get(bit2, i, j), cl);
         }
+    }
 }

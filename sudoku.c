@@ -59,7 +59,7 @@ UArray2_T populateUArray2(FILE *fp) {
         }
     }
 
-    Pnmrdr_free (&plain);
+    Pnmrdr_free(&plain);
     fclose(fp);
 
     return newUArr2;
@@ -71,8 +71,7 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) {
     int curr = *((int*)(UArray2_at(uarray2, i, j))) - 1;
     arr[curr]++;
 
-    if (arr[curr] > 1)
-    {
+    if (arr[curr] > 1) {
         UArray2_free(&uarray2);
         printf("EXIT FAILURE\n");
         exit(EXIT_FAILURE);
@@ -80,14 +79,13 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) {
 
     int count = 0;
     bool check1 = true;
-    for (i = 0; i < 9; i++)
-    {
+
+    for (i = 0; i < 9; i++) {
         if (arr[i] == 1) count++;
         if (arr[i] > 1) check1 = false;
     }
     
-    if (check1 == false || count == 9)
-    {
+    if (check1 == false || count == 9) {
         for (int i = 0; i < 9; i++) {
             arr[i] = 0;
         }
@@ -109,4 +107,3 @@ extern void Grid_map_subsquare(UArray2_T uarray2, void apply(int i,
         }
     }
 }
-

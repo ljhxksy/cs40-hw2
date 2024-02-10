@@ -13,7 +13,8 @@ extern void Grid_map_subsquare(UArray2_T uarray2, void apply(int i,
                                    void *p2), void *cl, int col, int row);
 Except_T Checked_Runtime = { "Checked Runtime Error" };
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) 
+{
     FILE *fp = NULL;
 
     if (argc == 1) {
@@ -45,7 +46,8 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-UArray2_T populateUArray2(FILE *fp) {
+UArray2_T populateUArray2(FILE *fp) 
+{
     Pnmrdr_T plain = Pnmrdr_new(fp);
 
     Pnmrdr_mapdata data = Pnmrdr_data(plain);
@@ -54,7 +56,7 @@ UArray2_T populateUArray2(FILE *fp) {
     UArray2_T newUArr2 = UArray2_new(data.width, data.height, sizeof(int));
 
     for (int j = 0; j < (int)data.height; j++) {
-        for (int i = 0; i < (int)data.width; i++){
+        for (int i = 0; i < (int)data.width; i++) {
             *((int *)UArray2_at(newUArr2, i, j)) = Pnmrdr_get(plain);
         }
     }
@@ -65,7 +67,8 @@ UArray2_T populateUArray2(FILE *fp) {
     return newUArr2;
 }
 
-void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) { 
+void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) 
+{ 
     (void)p1;  
     int* arr = (int*)p2;
     int curr = *((int*)(UArray2_at(uarray2, i, j))) - 1;
@@ -92,9 +95,10 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2) {
     }  
 }
 
-extern void Grid_map_subsquare(UArray2_T uarray2, void apply(int i, 
+void Grid_map_subsquare(UArray2_T uarray2, void apply(int i, 
                                    int j, UArray2_T uarray2, void *p1, 
-                                   void *p2), void *cl, int col, int row) {
+                                   void *p2), void *cl, int col, int row) 
+{
     assert(uarray2);
     assert(apply);
 

@@ -43,6 +43,7 @@ extern int Bit2_get(T bit2, int col, int row) {
     assert(bit2);
     
     int elem = Bit_get(bit2->array, Bit2_width(bit2) * row + col);
+    printf("elem at (%d, %d): %d\n", col, row, elem);
     
     return elem;
 }

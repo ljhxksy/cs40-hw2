@@ -11,6 +11,8 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2);
 extern void Grid_map_subsquare(UArray2_T uarray2, void apply(int i, 
                                    int j, UArray2_T uarray2, void *p1, 
                                    void *p2), void *cl, int col, int row);
+void checkSudoku(UArray2_T *uarray2);
+
 Except_T Checked_Runtime = { "Checked Runtime Error" };
 
 int main(int argc, char *argv[]) 
@@ -29,16 +31,8 @@ int main(int argc, char *argv[])
     //TODO: File(s) ['stderr'] is (are) empty (1)
 
     UArray2_T uarray2 = populateUArray2(fp);
-
-    int arr[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-    UArray2_map_row_major(uarray2, apply, &arr);
-    UArray2_map_col_major(uarray2, apply, &arr);
-
-    for (int i = 0; i < 9; i += 3) {
-        for (int j = 0; j < 9; j += 3) {
-            Grid_map_subsquare(uarray2, apply, &arr, i, j);
-        }
-    }
+    
+    checkSudoku(&uarray2);
 
     UArray2_free(&uarray2);
     printf("EXIT SUCCESS\n");
@@ -46,12 +40,25 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+void checkSudoku(UArray2_T *uarray2) {
+    int arr[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    UArray2_map_row_major(*uarray2, apply, &arr);
+    UArray2_map_col_major(*uarray2, apply, &arr);
+    
+    for (int i = 0; i < 9; i += 3) {
+        for (int j = 0; j < 9; j += 3) {
+            Grid_map_subsquare(*uarray2, apply, &arr, i, j);
+        }
+    }
+}
+
 UArray2_T populateUArray2(FILE *fp) 
 {
     Pnmrdr_T plain = Pnmrdr_new(fp);
 
     Pnmrdr_mapdata data = Pnmrdr_data(plain);
-    assert(data.type == 2 && data.width == 9 && data.height == 9);
+    assert(data.width == 9 && data.height == 9);
 
     UArray2_T newUArr2 = UArray2_new(data.width, data.height, sizeof(int));
 
@@ -91,7 +98,7 @@ void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2)
     if (check1 == false || count == 9) {
         for (int i = 0; i < 9; i++) {
             arr[i] = 0;
-        }
+        }   
     }  
 }
 

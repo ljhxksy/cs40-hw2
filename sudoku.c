@@ -58,6 +58,7 @@ UArray2_T populateUArray2(FILE *fp)
     Pnmrdr_T plain = Pnmrdr_new(fp);
 
     Pnmrdr_mapdata data = Pnmrdr_data(plain);
+    assert(data.type == 2 || data.type == 5);
     assert(data.width == 9 && data.height == 9);
 
     UArray2_T newUArr2 = UArray2_new(data.width, data.height, sizeof(int));
@@ -65,6 +66,8 @@ UArray2_T populateUArray2(FILE *fp)
     for (int j = 0; j < (int)data.height; j++) {
         for (int i = 0; i < (int)data.width; i++) {
             *((int *)UArray2_at(newUArr2, i, j)) = Pnmrdr_get(plain);
+            assert(*((int *)UArray2_at(newUArr2, i, j)) > 0);
+            assert(*((int *)UArray2_at(newUArr2, i, j)) <= 9);
         }
     }
 

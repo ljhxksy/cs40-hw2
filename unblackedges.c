@@ -120,7 +120,8 @@ Bit2_T populateBit2(FILE *fp)
     Pnmrdr_T p1 = Pnmrdr_new(fp);
 
     Pnmrdr_mapdata data = Pnmrdr_data(p1);
-    assert(data.type == 1);
+    assert(data.type == 1 || data.type == 4);
+    assert(data.height != 0 && data.width != 0);
 
     Bit2_T newBit2 = Bit2_new(data.height, data.width);
 

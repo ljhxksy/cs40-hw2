@@ -7,10 +7,10 @@
 
 Acknowledgements:
 -----------------
-    TAs (all): thanks 
-    especially randy
+        TAs (all): thanks 
+        especially randy
 
-    Thanks mark for discussing extensively with noah about our design doc
+        Thanks mark for discussing extensively with noah about our design doc
 
 Implementation:
 ---------------

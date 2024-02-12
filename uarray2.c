@@ -9,7 +9,7 @@
 
 /********** UArray2_new ********
  *
- *	 Allocates, initializes, and returns a new 2-dimensional  array of 
+ *	 Allocates, initializes, and returns a new 2-dimensional  array of
  *   (height*width) elements with bounds zero through (height − 1)(width - 1).
  *
  * 	Parameters:
@@ -20,54 +20,56 @@
  * 	Return:     the new uarray2
  *
  * 	Expects:
- *      		height > 0 && width > 0 && size > 0 
+ *      		height > 0 && width > 0 && size > 0
  *
- * 	Notes:	
+ * 	Notes:
  *      		Will CRE if height, width or size is <= 0
  *      		Will CRE if malloc fails.
  *
  ************************/
 
-extern T UArray2_new (int width, int height, int size) {
+extern T UArray2_new(int width, int height, int size)
+{
 
-    assert(height >= 0 && width >= 0 && size > 0);
+        assert(height >= 0 && width >= 0 && size > 0);
 
-    UArray_T uarray = UArray_new(width*height, size);
-    T newUArr2 = malloc(sizeof(struct T));
-    assert(newUArr2);
+        UArray_T uarray = UArray_new(width * height, size);
+        T newUArr2 = malloc(sizeof(struct T));
+        assert(newUArr2);
 
-    newUArr2->height = height;
-    newUArr2->width = width;
-    newUArr2->size = size;
-    newUArr2->array = uarray;
+        newUArr2->height = height;
+        newUArr2->width = width;
+        newUArr2->size = size;
+        newUArr2->array = uarray;
 
-    return newUArr2;
+        return newUArr2;
 }
 
 /********** UArray2_free ********
-* 
-*   	Deallocates and clears all elements in the uarray2.
-*
-* 	Parameters: 	
-*		UArray2_T *uarray2: The pointer to uarray2.
-*
-* 	Return:   none	
-*
-* 	Expects:
-*		Both the uarray2 and the pointer to uarray2 cannot be NULL
-*
-*	Notes:
-*		CRE if uarray2 == NULL or *uarray2 == NULL
-*		Sets the pointer to uarray2 to NULL
-*
+ *
+ *   	Deallocates and clears all elements in the uarray2.
+ *
+ * 	Parameters:
+ *		UArray2_T *uarray2: The pointer to uarray2.
+ *
+ * 	Return:   none
+ *
+ * 	Expects:
+ *		Both the uarray2 and the pointer to uarray2 cannot be NULL
+ *
+ *	Notes:
+ *		CRE if uarray2 == NULL or *uarray2 == NULL
+ *		Sets the pointer to uarray2 to NULL
+ *
  ************************/
 
-extern void UArray2_free(T *uarray2) {
+extern void UArray2_free(T *uarray2)
+{
 
-    assert(*uarray2 && uarray2);
+        assert(*uarray2 && uarray2);
 
-    UArray_free(&(*uarray2)->array);
-    free(*uarray2);
+        UArray_free(&(*uarray2)->array);
+        free(*uarray2);
 }
 
 /********** UArray2_width ********
@@ -75,7 +77,7 @@ extern void UArray2_free(T *uarray2) {
  *	    Checks for and returns the width of the uarray2.
  *
  * 	Parameters:
- *      		UArray2_T uarray2: the uarray2 
+ *      		UArray2_T uarray2: the uarray2
  *
  * 	Return: Int holding the width of the uarray2.
  *
@@ -87,9 +89,10 @@ extern void UArray2_free(T *uarray2) {
  *
  ************************/
 
-extern int UArray2_width(T uarray2) {
-    assert(uarray2);
-    return uarray2->width;
+extern int UArray2_width(T uarray2)
+{
+        assert(uarray2);
+        return uarray2->width;
 }
 
 /********** UArray2_height ********
@@ -97,7 +100,7 @@ extern int UArray2_width(T uarray2) {
  *	    Checks for and returns the height of the uarray2.
  *
  * 	Parameters:
- *      		UArray2_T uarray2: the uarray2 
+ *      		UArray2_T uarray2: the uarray2
  *
  * 	Return: Int holding the height of the uarray2
  *
@@ -109,9 +112,10 @@ extern int UArray2_width(T uarray2) {
  *
  ************************/
 
-extern int UArray2_height(T uarray2) {
-    assert(uarray2);
-    return uarray2->height;
+extern int UArray2_height(T uarray2)
+{
+        assert(uarray2);
+        return uarray2->height;
 }
 
 /********** UArray2_size ********
@@ -119,7 +123,7 @@ extern int UArray2_height(T uarray2) {
  *	    Provides the size of each element in the uarray2 in bytes
  *
  * 	Parameters:
- *      		UArray2_T uarray2: the uarray2 
+ *      		UArray2_T uarray2: the uarray2
  *
  * 	Return:     Int containing the size of an element in the uarray2 in bytes
  *
@@ -129,9 +133,10 @@ extern int UArray2_height(T uarray2) {
  *
  ************************/
 
-extern int UArray2_size (T uarray2) {
-    assert(uarray2);
-    return uarray2->size;
+extern int UArray2_size(T uarray2)
+{
+        assert(uarray2);
+        return uarray2->size;
 }
 
 /********** UArray2_at ********
@@ -139,11 +144,11 @@ extern int UArray2_size (T uarray2) {
  *	    Finds the element at the (col, row) position of the uarray2
  *
  * 	Parameters:
- *      		UArray2_T uarray2: the uarray2 
+ *      		UArray2_T uarray2: the uarray2
  *		        int col: the column number of the element in the uarray2
  *		        int row: the row number of the element in the uarray2
  *
- * 	Return:     A pointer to the desired element 
+ * 	Return:     A pointer to the desired element
  *
  * 	Expects:
  *      		The uarray2 cannot be NULL
@@ -154,27 +159,28 @@ extern int UArray2_size (T uarray2) {
  *
  ************************/
 
-void *UArray2_at(T uarray2, int col, int row) {
-    assert(uarray2);
-    // printf("//////// col, row: %d, %d /////", col, row);
-    //assert out of bounds
-    assert(col >= 0 && col < UArray2_width(uarray2));
-    assert(row >= 0 && row < UArray2_height(uarray2));
+void *UArray2_at(T uarray2, int col, int row)
+{
+        assert(uarray2);
+        // printf("//////// col, row: %d, %d /////", col, row);
+        // assert out of bounds
+        assert(col >= 0 && col < UArray2_width(uarray2));
+        assert(row >= 0 && row < UArray2_height(uarray2));
 
-    void *elem = UArray_at(uarray2->array, UArray2_width(uarray2) * row + col);
-    assert(elem);
+        void *elem = UArray_at(uarray2->array, UArray2_width(uarray2) * row + col);
+        assert(elem);
 
-    return elem;
+        return elem;
 }
 
 /**********UArray2_map_row_major ********
  *
- *	    Applies an apply() function of choice to every value in the uarray2 in 
+ *	    Applies an apply() function of choice to every value in the uarray2 in
  *      row-major order.
  *
  * 	Parameters:
- *      		UArray2_T uarray2: the uarray2 
- *		        void apply: the apply function, which applies to 
+ *      		UArray2_T uarray2: the uarray2
+ *		        void apply: the apply function, which applies to
  *                          every element in the uarray2
  *		        void *cl: application-specific pointer
  *
@@ -184,56 +190,58 @@ void *UArray2_at(T uarray2, int col, int row) {
  *      		Valid apply function as well as a pre-initialized uarray2
  *		NULL can be passed in instead of an application-specific pointer
  * 	Notes:
- *		Apply function takes arguments: int width, int height,  UArray2_T uarray2, 
+ *		Apply function takes arguments: int width, int height,  UArray2_T uarray2,
  *						    void *p1, void *p2
  *      		Arguments can be set as void if necessary
  *		CRE if uarray2 == NULL
  *
  ************************/
 
-extern void UArray2_map_row_major (T uarray2, void apply(int i, 
-                                   int j, UArray2_T uarray2, void *p1, 
-                                   void *p2), void *cl) {
-    assert(uarray2);
-    assert(apply);
-    
-    for (int j = 0; j < UArray2_height(uarray2); j++) {
-        for (int i = 0; i < UArray2_width(uarray2); i++) {
-            apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
+extern void UArray2_map_row_major(T uarray2, void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2), void *cl)
+{
+        assert(uarray2);
+        assert(apply);
+
+        for (int j = 0; j < UArray2_height(uarray2); j++)
+        {
+                for (int i = 0; i < UArray2_width(uarray2); i++)
+                {
+                        apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
+                }
         }
-    }
 }
 /**********UArray2_map_col_major ********
  *
  *	Applies an apply() function of choice to every value in the uarray2 in column-major order.
  *
  * 	Parameters:
- *      		UArray2_T uarray2: the uarray2 
+ *      		UArray2_T uarray2: the uarray2
  *		void apply: the apply function, which applies to every element in the uarray2
  *		void *cl: application-specific pointer
  *
  * 	Return: none
  *
- * 	Expects: 
+ * 	Expects:
  *      		Valid apply function as well as a pre-initialized uarray2
  *		NULL can be passed in instead of an application-specific pointer
- * 	Notes: 
- *		Apply function takes arguments: int width, int height,  UArray2_T uarray2, 
+ * 	Notes:
+ *		Apply function takes arguments: int width, int height,  UArray2_T uarray2,
  *						    void *p1, void *p2
  *      		Arguments can be set as void if necessary
  *		CRE if uarray2 == NULL
  *
  ************************/
 
-extern void UArray2_map_col_major (T uarray2, void apply(int i, 
-                                    int j, UArray2_T uarray2, void *p1, 
-                                    void *p2), void *cl) {
-    
-    assert(uarray2 && apply);
+extern void UArray2_map_col_major(T uarray2, void apply(int i, int j, UArray2_T uarray2, void *p1, void *p2), void *cl)
+{
 
-    for (int i = 0; i < UArray2_width(uarray2); i++) {
-        for (int j = 0; j < UArray2_height(uarray2); j++) {
-            apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
+        assert(uarray2 && apply);
+
+        for (int i = 0; i < UArray2_width(uarray2); i++)
+        {
+                for (int j = 0; j < UArray2_height(uarray2); j++)
+                {
+                        apply(i, j, uarray2, UArray2_at(uarray2, i, j), cl);
+                }
         }
-    }
 }

@@ -1,5 +1,5 @@
 /*
- *                      useuarray2.c
+ *             useuarray2.c
  *
  *         This program illustrates the use of the uarray2 interface.
  *

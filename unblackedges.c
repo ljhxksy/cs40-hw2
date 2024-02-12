@@ -10,185 +10,170 @@
 
 typedef struct Pair
 {
-        int col;
-        int row;
+    int col;
+    int row;
 } *Pair;
 
 Bit2_T populateBit2(FILE *fp);
-void traverse(Bit2_T bit2, Seq_T visited, Seq_T queue, int col, int row);
-bool validBlackEdge(int col, int row, Bit2_T bit2, Seq_T visited, Seq_T queue);
-void addNeighbors(int currCol, int currRow, Bit2_T bit2,
-                  Seq_T visited, Seq_T queue);
-void checkNeighbors(int col, int row, Bit2_T bit2, Seq_T visited, Seq_T queue);
+void traverse(Bit2_T bit2, Seq_T queue, int col, int row);
+bool validBlackEdge(int col, int row, Bit2_T bit2, Seq_T queue);
+void addNeighbors(int currCol, int currRow, Bit2_T bit2, Seq_T queue);
+void checkNeighbors(int col, int row, Bit2_T bit2, Seq_T queue);
 Pair initPair(int col, int row);
-void loop(Bit2_T bit2, Seq_T visited, Seq_T queue);
-void printUnblackedges(Bit2_T bit2);
+void loop(Bit2_T bit2, Seq_T queue);
+void pbmwrite(FILE *outputfp, Bit2_T bitmap);
+void writeBit(int col, int row, Bit2_T bit2, int bit, void *p1);
+void insertBit(int col, int row, Bit2_T bit2, int bit, void *p1);
 
-Except_T Checked_Runtime = {"Checked Runtime Error"};
+Except_T Checked_Runtime = { "Checked Runtime Error" };
 
 int main(int argc, char *argv[])
 {
-        FILE *fp = NULL;
+    FILE *fp = NULL;
 
-        if (argc == 1)
-        {
-                fp = stdin;
-        }
-        else if (argc == 2)
-        {
-                fp = fopen(argv[1], "rb");
-                assert(fp);
-        }
-        else
-        {
-                RAISE(Checked_Runtime);
-        }
+    if (argc == 1)
+    {
+        fp = stdin;
+    }
+    else if (argc == 2)
+    {
+        fp = fopen(argv[1], "rb");
+        assert(fp);
+    } else {
+        RAISE(Checked_Runtime);
+    }
 
-        Bit2_T bit2 = populateBit2(fp);
+    Bit2_T bit2 = populateBit2(fp);
+    Seq_T queue = Seq_seq(NULL);
 
-        Seq_T visited = Seq_seq(NULL);
-        Seq_T queue = Seq_seq(NULL);
+    loop(bit2, queue);
+    pbmwrite(stdout, bit2);
 
-        loop(bit2, visited, queue);
-        printUnblackedges(bit2);
-
-        while (Seq_length(visited) > 0)
-        {
-                free((Pair)Seq_remhi(visited));
-        }
-        Bit2_free(&bit2);
-        Seq_free(&visited);
-        Seq_free(&queue);
-        return 0;
+    Bit2_free(&bit2);
+    Seq_free(&queue);
+    return 0;
 }
 
-void printUnblackedges(Bit2_T bit2)
+void pbmwrite(FILE *outputfp, Bit2_T bitmap)
 {
-        printf("P1\n%d %d\n", Bit2_height(bit2), Bit2_height(bit2));
-        for (int i = 0; i < Bit2_width(bit2); i++)
-        {
-                for (int j = 0; j < Bit2_height(bit2); j++)
-                {
-                        printf("%d ", Bit2_get(bit2, i, j));
-                }
-                printf("\n");
-        }
+    assert(outputfp);
+    fprintf(outputfp, "P1\n%d %d\n", Bit2_width(bitmap), Bit2_height(bitmap));
+    Bit2_map_row_major(bitmap, writeBit, NULL);
+    fclose(outputfp);
 }
 
-void loop(Bit2_T bit2, Seq_T visited, Seq_T queue)
+void writeBit(int col, int row, Bit2_T bit2, int bit, void *p1)
 {
-        for (int i = 0; i < Bit2_height(bit2); i++)
-        {
-                traverse(bit2, visited, queue, 0, i);
-                traverse(bit2, visited, queue, Bit2_width(bit2) - 1, i);
-        }
+    (void)row;
+    (void)p1;
 
-        for (int i = 0; i < Bit2_width(bit2); i++)
-        {
-                traverse(bit2, visited, queue, i, 0);
-                traverse(bit2, visited, queue, i, Bit2_height(bit2) - 1);
-        }
+    printf("%d ", bit);
+    if (col == Bit2_width(bit2) - 1) printf("\n");
 }
 
-void traverse(Bit2_T bit2, Seq_T visited, Seq_T queue, int col, int row)
+void loop(Bit2_T bit2, Seq_T queue)
 {
+    for (int i = 0; i < Bit2_height(bit2); i++)
+    {
+        traverse(bit2, queue, 0, i);
+        traverse(bit2, queue, Bit2_width(bit2) - 1, i);
+    }
+
+    for (int i = 0; i < Bit2_width(bit2); i++)
+    {
+        traverse(bit2, queue, i, 0);
+        traverse(bit2, queue, i, Bit2_height(bit2) - 1);
+    }
+}
+
+void traverse(Bit2_T bit2, Seq_T queue, int col, int row)
+{
+    if (Bit2_get(bit2, col, row) == 1)
+    {
+        Pair index = initPair(col, row);
+        assert(index);
+
+        Seq_addhi(queue, (void *)index);
+    }
+
+    while (Seq_length(queue) > 0)
+    {
+        Pair frontQueue = (Pair)Seq_remlo(queue);
+        Bit2_put(bit2, frontQueue->col, frontQueue->row, 0);
+        addNeighbors(frontQueue->col, frontQueue->row, bit2, queue);
+        free(frontQueue);
+    }
+}
+
+void addNeighbors(int currCol, int currRow, Bit2_T bit2, Seq_T queue)
+{
+    checkNeighbors(currCol + 1, currRow, bit2, queue);
+    checkNeighbors(currCol - 1, currRow, bit2, queue);
+    checkNeighbors(currCol, currRow - 1, bit2, queue);
+    checkNeighbors(currCol, currRow + 1, bit2, queue);
+}
+
+void checkNeighbors(int col, int row, Bit2_T bit2, Seq_T queue)
+{
+    if (validBlackEdge(col, row, bit2, queue))
+    {
         if (Bit2_get(bit2, col, row) == 1)
         {
-                Pair index = initPair(col, row);
-                assert(index);
-                Seq_addhi(queue, (void *)index);
+            Pair edgePos = initPair(col, row);
+            assert(edgePos);
+            Seq_addhi(queue, edgePos);
         }
-
-        while (Seq_length(queue) > 0)
-        {
-                Pair frontQueue = (Pair)Seq_remlo(queue);
-                // Seq_addhi(visited, (void *)frontQueue);
-                Bit2_put(bit2, frontQueue->col, frontQueue->row, 0);
-                addNeighbors(frontQueue->col, frontQueue->row, bit2, visited, queue);
-        }
-}
-
-void addNeighbors(int currCol, int currRow, Bit2_T bit2,
-                  Seq_T visited, Seq_T queue)
-{
-        checkNeighbors(currCol + 1, currRow, bit2, visited, queue);
-        checkNeighbors(currCol - 1, currRow, bit2, visited, queue);
-        checkNeighbors(currCol, currRow - 1, bit2, visited, queue);
-        checkNeighbors(currCol, currRow + 1, bit2, visited, queue);
-}
-
-void checkNeighbors(int col, int row, Bit2_T bit2, Seq_T visited, Seq_T queue)
-{
-        if (validBlackEdge(col, row, bit2, visited, queue))
-        {
-                if (Bit2_get(bit2, col, row) == 1)
-                {
-                        Pair edgePos = initPair(col, row);
-                        assert(edgePos);
-                        Seq_addhi(queue, edgePos);
-                }
-        }
+    }
 }
 
 Bit2_T populateBit2(FILE *fp)
 {
-        Pnmrdr_T p1 = Pnmrdr_new(fp);
+    Pnmrdr_T p1 = Pnmrdr_new(fp);
 
-        Pnmrdr_mapdata data = Pnmrdr_data(p1);
-        assert(data.type == 1 || data.type == 4);
-        assert(data.height != 0 && data.width != 0);
+    Pnmrdr_mapdata data = Pnmrdr_data(p1);
+    assert(data.type == 1 || data.type == 4);
+    assert(data.height != 0 && data.width != 0);
 
-        Bit2_T newBit2 = Bit2_new(data.height, data.width);
+    Bit2_T newBit2 = Bit2_new(data.width, data.height);
+    Bit2_map_row_major(newBit2, insertBit, &p1);
 
-        for (int i = 0; i < (int)data.height; i++)
-        {
-                for (int j = 0; j < (int)data.width; j++)
-                {
-                        Bit2_put(newBit2, i, j, Pnmrdr_get(p1));
-                }
-        }
+    Pnmrdr_free(&p1);
+    fclose(fp);
 
-        Pnmrdr_free(&p1);
-        fclose(fp);
+    return newBit2;
+}
 
-        return newBit2;
+void insertBit(int col, int row, Bit2_T bit2, int bit, void *p1)
+{
+    (void)bit;
+    Bit2_put(bit2, col, row, Pnmrdr_get(*(Pnmrdr_T *)p1));
 }
 
 // checks if bit is not out of bounds and not visited
-bool validBlackEdge(int col, int row, Bit2_T bit2, Seq_T visited, Seq_T queue)
+bool validBlackEdge(int col, int row, Bit2_T bit2, Seq_T queue)
 {
-        if (col < 0 || col >= Bit2_width(bit2) ||
-            row < 0 || row >= Bit2_height(bit2))
-        {
-                return false;
-        }
+    if (col < 0 || col >= Bit2_width(bit2) ||
+        row < 0 || row >= Bit2_height(bit2))
+    {
+        return false;
+    }
 
-        for (int i = 0; i < Seq_length(visited); i++)
+    for (int i = 0; i < Seq_length(queue); i++)
+    {
+        Pair Temp = Seq_get(queue, i);
+        assert(Temp != NULL);
+        if (col == Temp->col && row == Temp->row)
         {
-                Pair Temp = Seq_get(visited, i);
-                assert(Temp);
-                if (col == Temp->col && row == Temp->row)
-                {
-                        return false;
-                }
+            return false;
         }
-
-        for (int i = 0; i < Seq_length(queue); i++)
-        {
-                Pair Temp = Seq_get(queue, i);
-                assert(Temp != NULL);
-                if (col == Temp->col && row == Temp->row)
-                {
-                        return false;
-                }
-        }
-        return true;
+    }
+    return true;
 }
 
 Pair initPair(int col, int row)
 {
-        Pair pair = ALLOC(sizeof(struct Pair));
-        pair->col = col;
-        pair->row = row;
-        return pair;
+    Pair pair = ALLOC(sizeof(struct Pair));
+    pair->col = col;
+    pair->row = row;
+    return pair;
 }

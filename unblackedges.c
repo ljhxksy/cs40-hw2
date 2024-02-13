@@ -1,29 +1,17 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <pnmrdr.h>
-#include <except.h>
-#include <stdbool.h>
-#include <mem.h>
-#include "bit2.h"
-#include "seq.h"
+/**************************************************************
+ *
+ *                     unblackedges.c
+ *
+ *     Assignment: iii
+ *     Authors:  Trin Changkasiri (pchang08) & Anh Hoang (ahoang05)
+ *     Date:     02/12/2024
+ *
+ *     This file contains the implementation of unblackedges, which removes 
+ *     black edges from a scanned image (P1/P5 pbm file).
+ *
+ **************************************************************/
 
-typedef struct Pair
-{
-        int col;
-        int row;
-} *Pair;
-
-Bit2_T populateBit2(FILE *fp);
-void traverse(Bit2_T bit2, Seq_T queue, int col, int row);
-bool validBlackEdge(int col, int row, Bit2_T bit2, Seq_T queue);
-void addNeighbors(int currCol, int currRow, Bit2_T bit2, Seq_T queue);
-void checkNeighbors(int col, int row, Bit2_T bit2, Seq_T queue);
-Pair initPair(int col, int row);
-void loop(Bit2_T bit2, Seq_T queue);
-void pbmwrite(FILE *outputfp, Bit2_T bitmap);
-void writeBit(int col, int row, Bit2_T bit2, int bit, void *p1);
-void insertBit(int col, int row, Bit2_T bit2, int bit, void *p1);
+#include <unblackedges.h>
 
 Except_T Checked_Runtime = {"Checked Runtime Error"};
 
@@ -31,17 +19,12 @@ int main(int argc, char *argv[])
 {
         FILE *fp = NULL;
 
-        if (argc == 1)
-        {
+        if (argc == 1) {
                 fp = stdin;
-        }
-        else if (argc == 2)
-        {
+        } else if (argc == 2) {
                 fp = fopen(argv[1], "rb");
                 assert(fp);
-        }
-        else
-        {
+        } else {
                 RAISE(Checked_Runtime);
         }
 
@@ -59,7 +42,8 @@ int main(int argc, char *argv[])
 void pbmwrite(FILE *outputfp, Bit2_T bitmap)
 {
         assert(outputfp);
-        fprintf(outputfp, "P1\n%d %d\n", Bit2_width(bitmap), Bit2_height(bitmap));
+        fprintf(outputfp, "P1\n%d %d\n", Bit2_width(bitmap), 
+                                         Bit2_height(bitmap));
         Bit2_map_row_major(bitmap, writeBit, NULL);
         fclose(outputfp);
 }
@@ -70,37 +54,31 @@ void writeBit(int col, int row, Bit2_T bit2, int bit, void *p1)
         (void)p1;
 
         printf("%d ", bit);
-        if (col == Bit2_width(bit2) - 1 || col == 35)
-                printf("\n");
+        if (col == Bit2_width(bit2) - 1 || col == 35) printf("\n");
 }
 
 void loop(Bit2_T bit2, Seq_T queue)
 {
-        for (int i = 0; i < Bit2_height(bit2); i++)
-        {
-                traverse(bit2, queue, 0, i);
-                traverse(bit2, queue, Bit2_width(bit2) - 1, i);
+        for (int i = 0; i < Bit2_height(bit2); i++) {
+                unblackEdge(bit2, queue, 0, i);
+                unblackEdge(bit2, queue, Bit2_width(bit2) - 1, i);
         }
 
-        for (int i = 0; i < Bit2_width(bit2); i++)
-        {
-                traverse(bit2, queue, i, 0);
-                traverse(bit2, queue, i, Bit2_height(bit2) - 1);
+        for (int i = 0; i < Bit2_width(bit2); i++) {
+                unblackEdge(bit2, queue, i, 0);
+                unblackEdge(bit2, queue, i, Bit2_height(bit2) - 1);
         }
 }
 
-void traverse(Bit2_T bit2, Seq_T queue, int col, int row)
+void unblackEdge(Bit2_T bit2, Seq_T queue, int col, int row)
 {
-        if (Bit2_get(bit2, col, row) == 1)
-        {
+        if (Bit2_get(bit2, col, row) == 1) {
                 Pair index = initPair(col, row);
                 assert(index);
-
                 Seq_addhi(queue, (void *)index);
         }
 
-        while (Seq_length(queue) > 0)
-        {
+        while (Seq_length(queue) > 0) {
                 Pair frontQueue = (Pair)Seq_remlo(queue);
                 Bit2_put(bit2, frontQueue->col, frontQueue->row, 0);
                 addNeighbors(frontQueue->col, frontQueue->row, bit2, queue);
@@ -118,10 +96,8 @@ void addNeighbors(int currCol, int currRow, Bit2_T bit2, Seq_T queue)
 
 void checkNeighbors(int col, int row, Bit2_T bit2, Seq_T queue)
 {
-        if (validBlackEdge(col, row, bit2, queue))
-        {
-                if (Bit2_get(bit2, col, row) == 1)
-                {
+        if (validBlackEdge(col, row, bit2, queue)) {
+                if (Bit2_get(bit2, col, row) == 1) {
                         Pair edgePos = initPair(col, row);
                         assert(edgePos);
                         Seq_addhi(queue, edgePos);
@@ -156,27 +132,16 @@ void insertBit(int col, int row, Bit2_T bit2, int bit, void *p1)
 bool validBlackEdge(int col, int row, Bit2_T bit2, Seq_T queue)
 {
         if (col < 0 || col >= Bit2_width(bit2) ||
-            row < 0 || row >= Bit2_height(bit2))
-        {
+            row < 0 || row >= Bit2_height(bit2)) {
                 return false;
         }
 
-        for (int i = 0; i < Seq_length(queue); i++)
-        {
+        for (int i = 0; i < Seq_length(queue); i++) {
                 Pair Temp = Seq_get(queue, i);
                 assert(Temp != NULL);
-                if (col == Temp->col && row == Temp->row)
-                {
+                if (col == Temp->col && row == Temp->row) {
                         return false;
                 }
         }
         return true;
-}
-
-Pair initPair(int col, int row)
-{
-        Pair pair = ALLOC(sizeof(struct Pair));
-        pair->col = col;
-        pair->row = row;
-        return pair;
 }

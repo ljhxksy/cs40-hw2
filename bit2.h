@@ -1,3 +1,16 @@
+/**************************************************************
+ *
+ *                     bit2.h
+ *
+ *     Assignment: iii
+ *     Authors:  Trin Changkasiri (pchang08) & Anh Hoang (ahoang05)
+ *     Date:     02/12/2024
+ *
+ *     This file contains the function declarations for the implementation
+ *     of the Bit2_T data structure.
+ *
+ **************************************************************/
+
 #include <bit.h>
 
 #ifndef BIT2

@@ -1,3 +1,17 @@
+/**************************************************************
+ *
+ *                     bit2.c
+ *
+ *     Assignment: iii
+ *     Authors:  Trin Changkasiri (pchang08) & Anh Hoang (ahoang05)
+ *     Date:     02/12/2024
+ *
+ *     This file contains the implementation of the Bit2 data structure.
+ *     This data structure is a 2D (a.k.a matrix) of bits, which relies 
+ *     on the Hanson bit.h interface.
+ *
+ **************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -62,8 +76,8 @@ extern int Bit2_put(T bit2, int col, int row, int bit)
         return prev;
 }
 
-extern void Bit2_map_row_major(T bit2, void apply(int i, int j, Bit2_T bit2, int bit, void *p1),
-                               void *cl)
+extern void Bit2_map_row_major(T bit2, void apply(int i, int j, 
+                                Bit2_T bit2, int bit, void *p1), void *cl)
 {
         assert(bit2);
         assert(apply);
@@ -77,16 +91,14 @@ extern void Bit2_map_row_major(T bit2, void apply(int i, int j, Bit2_T bit2, int
         }
 }
 
-extern void Bit2_map_col_major(T bit2, void apply(int width, int height, Bit2_T bit2, int bit, void *p1),
-                               void *cl)
+extern void Bit2_map_col_major(T bit2, void apply(int width, int height, 
+                                Bit2_T bit2, int bit, void *p1),void *cl)
 {
         assert(bit2);
         assert(apply);
 
-        for (int i = 0; i < Bit2_width(bit2); i++)
-        {
-                for (int j = 0; j < Bit2_height(bit2); j++)
-                {
+        for (int i = 0; i < Bit2_width(bit2); i++) {
+                for (int j = 0; j < Bit2_height(bit2); j++) {
                         apply(i, j, bit2, Bit2_get(bit2, i, j), cl);
                 }
         }

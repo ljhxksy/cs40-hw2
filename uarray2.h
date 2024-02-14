@@ -6,7 +6,7 @@
  *     Authors:  Trin Changkasiri (pchang08) & Anh Hoang (ahoang05)
  *     Date:     02/12/2024
  *
- *     This file contains the function declarations for the implementation
+ *     This file contains the function contracts for the implementation
  *     of the UArray2_T data structure.
  *
  **************************************************************/
@@ -39,7 +39,7 @@ struct T
  * 	Return:     the new uarray2
  *
  * 	Expects:
- *      		height > 0 && width > 0 && size > 0
+ *      		height >= 0 && width >= 0 && size > 0
  *
  * 	Notes:
  *      		Will CRE if height, width or size is <= 0
@@ -124,9 +124,9 @@ extern int UArray2_size(T uarray2);
  *	    Finds the element at the (col, row) position of the uarray2
  *
  * 	Parameters:
-*      		UArray2_T uarray2: the uarray2
-*		int col: the column number of the element in the uarray2
-*		int row: the row number of the element in the uarray2
+ *      		UArray2_T uarray2: the uarray2
+ *		int col: the column number of the element in the uarray2
+ *		int row: the row number of the element in the uarray2
  *
  * 	Return:         A pointer to the desired element
  *
@@ -157,7 +157,7 @@ void *UArray2_at(T uarray2, int col, int row);
  *      	Valid apply function as well as a pre-initialized uarray2
  *		NULL can be passed in instead of an application-specific pointer
  * 	Notes:
- *		Apply function takes arguments: int i, int j, 
+ *		Apply function takes arguments: int i, int j,
  *                              UArray2_T uarray2, void *p1, void *p2
  *              Apply functions apply to each element of the UArray at (i,j)
  *      	Arguments can be set as void if necessary
@@ -165,16 +165,16 @@ void *UArray2_at(T uarray2, int col, int row);
  *
  ************************/
 extern void UArray2_map_row_major(T uarray2, void apply(int i, int j, 
-                        UArray2_T uarray2, void *p1, void *p2), void *cl);
+                UArray2_T uarray2, void *p1, void *p2), void *cl);
 
 /**********UArray2_map_col_major ********
  *
- *	Applies an apply() function of choice to every value in the uarray2 
+ *	Applies an apply() function of choice to every value in the uarray2
  *      in column-major order.
  *
  * 	Parameters:
  *      	UArray2_T uarray2: the uarray2
- *		void apply: the apply function, which applies to every element 
+ *		void apply: the apply function, which applies to every element
  *                          in the uarray2
  *		void *cl: application-specific pointer
  *
@@ -184,7 +184,7 @@ extern void UArray2_map_row_major(T uarray2, void apply(int i, int j,
  *      	Valid apply function as well as a pre-initialized uarray2
  *		NULL can be passed in instead of an application-specific pointer
  * 	Notes:
- *		Apply function takes arguments: int width, int height,  
+ *		Apply function takes arguments: int width, int height,
  *                      UArray2_T uarray2, void *p1, void *p2
  *      	Arguments can be set as void if necessary
  *		CRE if uarray2 == NULL

@@ -23,7 +23,7 @@
 
 extern T Bit2_new(int width, int height)
 {
-        assert(width > 0 && height > 0);
+        assert(width >= 0 && height >= 0);
 
         Bit_T bit = Bit_new(width * height);
         T newBit2 = malloc(sizeof(struct T));

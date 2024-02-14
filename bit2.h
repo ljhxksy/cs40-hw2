@@ -6,7 +6,7 @@
  *     Authors:  Trin Changkasiri (pchang08) & Anh Hoang (ahoang05)
  *     Date:     02/12/2024
  *
- *     This file contains the function declarations for the implementation
+ *     This file contains the function contracts for the implementation
  *     of the Bit2_T data structure.
  *
  **************************************************************/
@@ -37,7 +37,7 @@ struct T
  * 	Return:     the new bit2 vector
  *
  * 	Expects:
- *      		height > 0 && width > 0
+ *      		height >= 0 && width >= 0
  *
  * 	Notes:
  *      		Will CRE if height or width is <= 0
@@ -104,7 +104,7 @@ extern int Bit2_height(T bit2);
 /********** Bit2_get ********
  *
  *	    returns the bit at (col,row) and thus tests whether that bit
- *      is in bit2
+ *          is in bit2
  *
  * 	Parameters:
  *      		Bit2_T bit2: the bit2
@@ -124,10 +124,11 @@ extern int Bit2_get(T bit2, int col, int row);
 
 /********** Bit2_put ********
  *
- *	    Sets bit (col, row) to bit and returns the previous value of that bit
+ *	    Sets bit (col, row) to bit and returns the previous value of that 
+ *          bit
  *
  * 	Parameters:
- *      		Bit2_T bit2: the bit2
+ *      	Bit2_T bit2: the bit2
  *              int col:     the column number of the element in the bit2
  *              int row:     the row number of the element in the bit2
  *
@@ -161,7 +162,8 @@ extern int Bit2_put(T bit2, int col, int row, int bit);
  *
  * 	Expects:
  *      		Valid apply function as well as a pre-initialized bit2
- *		        NULL can be passed in instead of an application-specific pointer
+ *		        NULL can be passed in instead of an application-specific
+ *                      pointer
  * 	Notes:
  *		        Apply function takes arguments: int width, int height,
  *                                      Bit2_T bit2, int bit, void *p1
@@ -169,8 +171,8 @@ extern int Bit2_put(T bit2, int col, int row, int bit);
  *		        CRE if bit2 == NULL
  *
  ************************/
-extern void Bit2_map_row_major(T bit2, void apply(int i, int j, Bit2_T bit2, int bit, void *p1),
-                               void *cl);
+extern void Bit2_map_row_major(T bit2, void apply(int i, int j, Bit2_T bit2, 
+                               int bit, void *p1), void *cl);
 
 /**********Bit2_map_col_major ********
  *
@@ -187,7 +189,8 @@ extern void Bit2_map_row_major(T bit2, void apply(int i, int j, Bit2_T bit2, int
  *
  * 	Expects:
  *      		Valid apply function as well as a pre-initialized bit2
- *		        NULL can be passed in instead of an application-specific pointer
+ *		        NULL can be passed in instead of an application-specific
+ *                      pointer
  * 	Notes:
  *		        Apply function takes arguments: int width, int height,
  *                                      Bit2_T bit2, int bit, void *p1
@@ -195,8 +198,8 @@ extern void Bit2_map_row_major(T bit2, void apply(int i, int j, Bit2_T bit2, int
  *		        CRE if bit2 == NULL
  *
  ************************/
-extern void Bit2_map_col_major(T bit2, void apply(int width, int height, Bit2_T bit2, int bit, void *p1),
-                               void *cl);
-
+extern void Bit2_map_col_major(T bit2, void apply(int width, int height, 
+                                Bit2_T bit2, int bit, void *p1), void *cl);
+                                
 #undef T
 #endif
